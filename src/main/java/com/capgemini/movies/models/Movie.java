@@ -1,6 +1,5 @@
 package com.capgemini.movies.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -21,6 +20,9 @@ public class Movie {
     @Column(unique=true)
     private String name;
 
+    @Size(max = 1000)
+    private String description;
+
     @NotNull
     @Size(max = 20, min = 5)
     private String youtubeId;
@@ -31,7 +33,6 @@ public class Movie {
 
     @ManyToOne
     @NotNull
-    @JsonIgnore
     private Category category;
 
     public Long getId() {
@@ -72,5 +73,13 @@ public class Movie {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

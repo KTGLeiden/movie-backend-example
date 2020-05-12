@@ -1,6 +1,9 @@
 package com.capgemini.movies.controllers;
 
+import com.capgemini.movies.dto.CategoryDto;
 import com.capgemini.movies.exceptions.BadRequestException;
+import com.capgemini.movies.exceptions.NotFoundException;
+import com.capgemini.movies.mappers.CategoryMapper;
 import com.capgemini.movies.models.Category;
 import com.capgemini.movies.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin
@@ -16,14 +20,23 @@ public class CategoryController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private CategoryMapper categoryMapper;
+
     @GetMapping
-    public List<Category> getCategorys(){
+    public List<Category> getCategories(){
         return this.categoryRepository.findAll();
     }
 
+    @GetMapping("/all")
+    public List<CategoryDto> getCategoriesList(){
+        return this.categoryRepository.findAll().stream().map(categoryMapper::toDto).collect(Collectors.toList());
+    }
+
     @GetMapping("/{id}")
-    public Category getCategory(@PathVariable Long id){
-        return this.categoryRepository.getOne(id);
+    public CategoryDto getCategoryDetails(@PathVariable Long id){
+        Category category = this.categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found!"));
+        return categoryMapper.toDto(category);
     }
 
     @PostMapping

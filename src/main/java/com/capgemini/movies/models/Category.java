@@ -1,5 +1,7 @@
 package com.capgemini.movies.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,7 +21,11 @@ public class Category {
     @Column(unique=true)
     private String name;
 
+    @Size(max = 1000)
+    private String description;
+
     @OneToMany(mappedBy = "category", orphanRemoval = false)
+    @JsonIgnore
     private List<Movie> movies;
 
 
@@ -45,5 +51,13 @@ public class Category {
 
     public void setMovies(List<Movie> movies) {
         this.movies = movies;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
